@@ -1,8 +1,9 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <opencv2/highgui/highgui_c.h>
 
 int main(int argc, char** argv) {
-    cvNamedWindow("Thief", CV_WINDOW_AUTOSIZE);
+    cvNamedWindow("alectryon", CV_WINDOW_AUTOSIZE);
     CvCapture* webcam = cvCreateCameraCapture(CV_CAP_ANY);
     cvSetCaptureProperty(webcam, CV_CAP_PROP_FRAME_WIDTH, 352); // width of viewport of camera
     cvSetCaptureProperty(webcam, CV_CAP_PROP_FRAME_HEIGHT, 288); // heigh
@@ -18,9 +19,9 @@ int main(int argc, char** argv) {
                 exit(1);
             } else {
                 fprintf(stdout, "read image from webcam.\n");
-                cvShowImage("Thief", image);
+                cvShowImage("alectryon", image);
                 if(cvWaitKey(100) == 27) {
-                    cvDestroyWindow("Thief");
+                    cvDestroyWindow("alectryon");
                     cvReleaseImage(&image);
                     break;
                 }
