@@ -10,6 +10,8 @@
 #define OS_X_USER_ENV "USER"
 #define OS_X_USERS_DIR "/Users/"
 
+#define LINUX_USER_ENV "USERNAME"
+#define LINUX_HOME_DIR "/home/"
 
 char* currentUserHomePath() {
     char userHomeDirectoryPath[100] = "";
@@ -33,8 +35,10 @@ char* currentUserHomePath() {
 #   error "Unknown Apple platform"
 #endif
 #elif __linux__
-    return strcat("/home/", getenv("USERNAME"));
     // Linux
+    strcat(userHomeDirectoryPath, LINUX_HOME_DIR);
+    strcat(userHomeDirectoryPath, getenv(LINUX_USER_ENV));
+    strcat(userHomeDirectoryPath, "/");
 #elif __unix__ // all unixes not caught above
     // Unix
 #elif defined(_POSIX_VERSION)
