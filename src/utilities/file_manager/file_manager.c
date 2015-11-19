@@ -30,7 +30,7 @@ char* currentUserHomePath() {
     // OS X
     strcat(userHomeDirectoryPath, OS_X_USERS_DIR);
     strcat(userHomeDirectoryPath, getenv(OS_X_USER_ENV));
-    strcat(userHomeDirectoryPath, "/");
+    strcat(userHomeDirectoryPath, "/Pictures/");
 #else
 #   error "Unknown Apple platform"
 #endif
@@ -38,7 +38,7 @@ char* currentUserHomePath() {
     // Linux
     strcat(userHomeDirectoryPath, LINUX_HOME_DIR);
     strcat(userHomeDirectoryPath, getenv(LINUX_USER_ENV));
-    strcat(userHomeDirectoryPath, "/");
+    strcat(userHomeDirectoryPath, "/Pictures/");
 #elif __unix__ // all unixes not caught above
     // Unix
 #elif defined(_POSIX_VERSION)
