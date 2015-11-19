@@ -1,12 +1,11 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
 #include <opencv2/core/core_c.h>
 #include <opencv2/highgui/highgui_c.h>
 #include <opencv2/video/tracking.hpp>
-#include <time.h>
 #include <opencv2/imgproc/imgproc_c.h>
 #include <unistd.h>
+#include "utilities/file_manager/file_manager.h"
 
 //globals
 
@@ -81,9 +80,6 @@ float motionfactor(const CvMat* fback_flow_map, CvMat* cflowmap, int step)
 int main(int argc, char *argv[])
 {
 
-
-    char *time_string = malloc(sizeof(char)*24);
-
     //check for and interperet passed flags
 
     if(argc != 1)
@@ -100,7 +96,7 @@ int main(int argc, char *argv[])
 
 
     //create font for use in drawing
-    cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX, 0.5, 0.5, 0, 1.5, CV_AA);
+    cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX, 0.5, 0.5, 0, 1, CV_AA);
 
 
     //check if log file exists already
@@ -181,27 +177,9 @@ int main(int argc, char *argv[])
 
             if(motionfactor(fback_flow_map, cflow, 16) > motion_min_val)
             {
-
-                char name[50] = "motion_detect_";
-
                 cvPutText(cap_frame, "Motion Detected", cvPoint(10, 370), &font, cvScalar(0, 0, 255, 0));
-
-                //get the time
-                time_t now;
-                time(&now);
-                time_string = ctime(&now);
-
-                fprintf(file_er, " \n");
-                fprintf(file_er, "Log : motion detected taking picure... \n");
-                fprintf(file_er, "Log : picture taken at %s and stored with name motion_detect_%s.jpg \n", time_string, time_string);
-                fprintf(file_er, " \n");
-
-                strcat(name,time_string);
-                strcat(name,".jpg");
-
-                cvSaveImage(name, cap_frame, 0);
-
-            }else{
+                fmSaveImage(cap_frame);
+            }else {
 
                 cvPutText(cap_frame, "No Motion Detected", cvPoint(10, 370), &font, cvScalar(0, 255, 0, 0));
 
@@ -228,9 +206,7 @@ int main(int argc, char *argv[])
     }
 
     //release memory
-    time_string = NULL;
     cap_frame = NULL;
-
 
     cvReleaseImage(&cap_frame);
     cvReleaseCapture(&capture);
@@ -240,7 +216,6 @@ int main(int argc, char *argv[])
     cvReleaseMat(&cflow);
     fclose(file_er);
     cvDestroyWindow("Motion Detector Main Window");
-    free(time_string);
 
     return 0;
 }
