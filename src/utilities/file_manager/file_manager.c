@@ -59,19 +59,19 @@ void fmSaveImage(IplImage *iplImage) {
     strncpy(time_string, time_string_raw, strlen(time_string_raw)-1);//remove \n
 
     char imageName[50] = "motion_detect_";
-    char *imagePath = currentUserHomePath();
+    char *userHomePath = currentUserHomePath();
 
     strcat(imageName, time_string);
     strcat(imageName, ".jpg");
 
     char imageSavingPath[100] = "";
-    strcat(imageSavingPath, imagePath);
+    strcat(imageSavingPath, userHomePath);
     strcat(imageSavingPath, imageName);
 
 
     cvSaveImage(imageSavingPath, iplImage, 0);
 
     time_string_raw = NULL;
-    imagePath = NULL;
+    userHomePath = NULL;
 }
 
