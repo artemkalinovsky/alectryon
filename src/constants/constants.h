@@ -1,0 +1,12 @@
+
+
+
+#ifndef ALECTRYON_CONSTANTS_H
+#define ALECTRYON_CONSTANTS_H
+
+#define APP_WINDOW_NAME "alectryon"
+
+#define ESC_KEY 27
+
+#endif //ALECTRYON_CONSTANTS_H
+
