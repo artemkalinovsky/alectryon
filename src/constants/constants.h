@@ -4,8 +4,7 @@
 #ifndef ALECTRYON_CONSTANTS_H
 #define ALECTRYON_CONSTANTS_H
 
-#include "linux_constants.h"
-#include "os_x_constants.h"
+#define APP_WINDOW_NAME "alectryon"
 
 #define ESC_KEY 27
 
