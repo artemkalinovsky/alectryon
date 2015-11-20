@@ -8,6 +8,8 @@
 #include <opencv2/video/tracking.hpp>
 #include "motion_detector.h"
 
+#define DEFAULT_MOTION_SENSITIVITY 1000
+
 float motionfactor(const CvMat* fback_flow_map, CvMat* cflowmap, int step) {
     int x, y;
     float totalx = 0;
@@ -49,43 +51,42 @@ float motionfactor(const CvMat* fback_flow_map, CvMat* cflowmap, int step) {
 }
 
 struct MotionDetector mdMakeMotionDetector(){
-    CvMat *zeroMat = 0;
-    struct MotionDetector motionDetector = {.motion_min_val = 3000,
-                                            .matrixOfGray = zeroMat,
-                                            .cflow = zeroMat,
-                                            .fback_flow_map = zeroMat,
-                                            .prev_frame_grayscale = zeroMat,
+    struct MotionDetector motionDetector = {.motion_min_val = DEFAULT_MOTION_SENSITIVITY,
+                                            .matrixOfGray = 0,
+                                            .cflow = 0,
+                                            .fback_flow_map = 0,
+                                            .prev_frame_grayscale = 0,
                                             .temp = 0};
-    free(zeroMat);
     return motionDetector;
 }
 
-void mdFreeMotionDetector(struct MotionDetector motionDetector) {
-    cvReleaseMat(&motionDetector.matrixOfGray);
-    cvReleaseMat(&motionDetector.prev_frame_grayscale);
-    cvReleaseMat(&motionDetector.fback_flow_map);
-    cvReleaseMat(&motionDetector.cflow);
+void mdFreeMotionDetector(struct MotionDetector *motionDetector) {
+    cvReleaseMat(&motionDetector->matrixOfGray);
+    cvReleaseMat(&motionDetector->prev_frame_grayscale);
+    cvReleaseMat(&motionDetector->fback_flow_map);
+    cvReleaseMat(&motionDetector->cflow);
 }
 
-int isMotionDetected(struct MotionDetector motionDetector, IplImage *capturedImage) {
-    int initialFrame = motionDetector.matrixOfGray == 0;
-    if (!motionDetector.matrixOfGray) {
+int isMotionDetected(struct MotionDetector *motionDetector, IplImage *capturedImage) {
+    int initialFrame = motionDetector->matrixOfGray == 0;
+    if (!motionDetector->matrixOfGray) {
         //create a matrix for matrixOfGray, with same dimensions as webcam image
-        motionDetector.matrixOfGray = cvCreateMat(capturedImage->height, capturedImage->width, CV_8UC1);
+        motionDetector->matrixOfGray = cvCreateMat(capturedImage->height, capturedImage->width, CV_8UC1);
         //matrix for prevgrey same dimensions as grey
-        motionDetector.prev_frame_grayscale = cvCreateMat(motionDetector.matrixOfGray->rows, motionDetector.matrixOfGray->cols, motionDetector.matrixOfGray->type);
+        motionDetector->prev_frame_grayscale = cvCreateMat(motionDetector->matrixOfGray->rows, motionDetector->matrixOfGray->cols, motionDetector->matrixOfGray->type);
         //maps for storing fback_flow_map data from the farneback function
-        motionDetector.fback_flow_map = cvCreateMat(motionDetector.matrixOfGray->rows, motionDetector.matrixOfGray->cols, CV_32FC2);
-        motionDetector.cflow = cvCreateMat(motionDetector.matrixOfGray->rows, motionDetector.matrixOfGray->cols, CV_8UC3);
+        motionDetector->fback_flow_map = cvCreateMat(motionDetector->matrixOfGray->rows, motionDetector->matrixOfGray->cols, CV_32FC2);
+        motionDetector->cflow = cvCreateMat(motionDetector->matrixOfGray->rows, motionDetector->matrixOfGray->cols, CV_8UC3);
     }
 
     //convert frame to grayscale image and place it in the memory for matrixOfGray
-    cvCvtColor(capturedImage, motionDetector.matrixOfGray, CV_BGR2GRAY);
+    cvCvtColor(capturedImage, motionDetector->matrixOfGray, CV_BGR2GRAY);
 
     if (!initialFrame) {
-        cvCalcOpticalFlowFarneback(motionDetector.prev_frame_grayscale, motionDetector.matrixOfGray, motionDetector.fback_flow_map, 0.5, 3, 15, 3, 5, 1.2, 0);
-        cvCvtColor(motionDetector.prev_frame_grayscale, motionDetector.cflow, CV_GRAY2BGR);
-        return (motionfactor(motionDetector.fback_flow_map, motionDetector.cflow, 16) > motionDetector.motion_min_val);
+        cvCalcOpticalFlowFarneback(motionDetector->prev_frame_grayscale, motionDetector->matrixOfGray, motionDetector->fback_flow_map, 0.5, 3, 15, 3, 5, 1.2, 0);
+        cvCvtColor(motionDetector->prev_frame_grayscale, motionDetector->cflow, CV_GRAY2BGR);
+
+        return motionfactor(motionDetector->fback_flow_map, motionDetector->cflow, 16) > motionDetector->motion_min_val;
     }
     return 0;
 }

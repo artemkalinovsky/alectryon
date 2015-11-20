@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
             break;
         }
 
-        if(isMotionDetected(motionDetector, capturedImage)) {
+        if(isMotionDetected(&motionDetector, capturedImage)) {
             cvPutText(capturedImage, "Motion Detected", cvPoint(10, 370), &font, cvScalar(0, 0, 255, 0));
             fmSaveImage(capturedImage);
         } else {
@@ -75,6 +75,6 @@ int main(int argc, char *argv[])
     cvReleaseImage(&capturedImage);
     cvReleaseCapture(&webcam);
     cvDestroyWindow(APP_WINDOW_NAME);
-    mdFreeMotionDetector(motionDetector);
+    mdFreeMotionDetector(&motionDetector);
     return 0;
 }

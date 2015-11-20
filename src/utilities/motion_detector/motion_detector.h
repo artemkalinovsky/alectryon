@@ -15,7 +15,7 @@ struct MotionDetector {
 };
 
 struct MotionDetector mdMakeMotionDetector();
-void mdFreeMotionDetector(struct MotionDetector);
-int isMotionDetected(struct MotionDetector, IplImage*);
+void mdFreeMotionDetector(struct MotionDetector*);
+int isMotionDetected(struct MotionDetector*, IplImage*);
 
 #endif //ALECTRYON_MOTION_DETECTOR_H
