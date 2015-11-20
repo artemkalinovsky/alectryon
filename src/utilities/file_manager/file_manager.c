@@ -50,6 +50,7 @@ char* alectryonDirectoryPath() {
 }
 
 int isAlectryonDirectoryAvailable() {
+#warning this code create nonamed subdirectory! Please, fix it!
     char *alectryonImagesDir = alectryonDirectoryPath();
     DIR* dir = opendir(alectryonImagesDir);
     if (dir) {
