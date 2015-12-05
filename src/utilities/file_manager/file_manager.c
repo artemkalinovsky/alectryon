@@ -8,7 +8,6 @@
 #include <dirent.h>
 #include <sys/errno.h>
 #include "file_manager.h"
-#include "TargetConditionals.h"
 #include "../../constants/os_x_constants.h"
 #include "../../constants/linux_constants.h"
 
